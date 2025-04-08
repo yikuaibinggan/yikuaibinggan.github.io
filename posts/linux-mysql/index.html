@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en"
+  x-data
+  :class="$store.darkMode.class()"
+  :data-theme="$store.darkMode.theme()">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux环境下Mysql安装与部署 | MrZhang&#39; Blog</title>
+
+    
+
+<link rel="canonical" href="http://localhost:1313/posts/linux-mysql/" />
+
+
+
+<meta name="author" content="MrZhang" />
+<meta name="description" content="简介 本篇介绍Linux环境下mysql软件的安装步骤！
+" />
+
+
+<meta name="keywords" content="Tag1,Tag2">
+
+
+
+<meta name="generator" content="Hugo 0.145.0">
+
+
+<meta property="og:url" content="http://localhost:1313/posts/linux-mysql/">
+  <meta property="og:site_name" content="MrZhang&#39; Blog">
+  <meta property="og:title" content="Linux环境下Mysql安装与部署">
+  <meta property="og:description" content="简介 本篇介绍Linux环境下mysql软件的安装步骤！">
+  <meta property="og:locale" content="en">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-04-08T19:44:02+08:00">
+    <meta property="article:modified_time" content="2025-04-08T19:44:02+08:00">
+    <meta property="article:tag" content="Tag1">
+    <meta property="article:tag" content="Tag2">
+
+
+
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Linux环境下Mysql安装与部署">
+  <meta name="twitter:description" content="简介 本篇介绍Linux环境下mysql软件的安装步骤！">
+
+
+
+
+<link rel="stylesheet" href="/css/output.css" />
+
+
+
+
+    
+
+
+<style>
+  pre {
+    padding: 1em;
+    overflow: auto;
+  }
+</style>
+
+
+
+
+
+
+
+
+
+    
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3/dist/cdn.min.js" integrity="sha256-PtHu0lJIiSHfZeNj1nFd6wTX+Squ255SGZ/fc8seCtM=" crossorigin="anonymous"></script>
+  </head>
+
+  <body x-data="{
+    flip: false,
+  }">
+    
+    <div id="dream-global-bg"></div>
+
+    
+<nav class="mt-4 lg:mt-8 py-4">
+
+  
+  <div class="container flex justify-between px-4">
+  
+    <section class="flex items-center gap-4">
+      <div class="avatar cursor-pointer hover:avatar-online" @click="flip = !flip" title="Flip it!">
+        <div class="h-10 rounded-full">
+          <img src="/img/avatar.jpg" alt="MrZhang&#39; Blog" />
+        </div>
+      </div>
+
+      
+      <div>
+        
+        <a href="http://localhost:1313/" class="text-lg font-semibold cursor-pointer">
+          MrZhang&#39; Blog
+        </a>
+        
+        
+        <div class="text-base-content/60 text-sm">活到老，学到老！</div>
+        
+      </div>
+      
+    </section>
+
+    
+    
+
+    <div class="dropdown dropdown-end sm:hidden">
+      <div tabindex="0" role="button" class="btn btn-ghost btn-square" aria-label="Select an option">
+        <ion-icon name="menu" class="text-2xl"></ion-icon>
+      </div>
+      <ul tabindex="0" class="dropdown-content menu w-36 bg-base-100 rounded-box z-1 shadow-md">
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li>
+  <a class="inline-flex items-center p-2 cursor-pointer" href="/posts" title="Archives">
+    <ion-icon name="archive"></ion-icon>
+    Archives
+  </a>
+</li>
+
+
+
+
+<li>
+  <a class="inline-flex items-center p-2 cursor-pointer" href="/categories" title="All Categories">
+    <ion-icon name="grid"></ion-icon>
+    All Categories
+  </a>
+</li>
+
+
+
+
+<li>
+  <a class="inline-flex items-center p-2 cursor-pointer" href="/tags" title="All Tags">
+    <ion-icon name="pricetags"></ion-icon>
+    All Tags
+  </a>
+</li>
+
+
+
+
+
+
+      </ul>
+    </div>
+    <section class="hidden sm:flex sm:items-center sm:gap-2 md:gap-4">
+      
+
+      
+      
+
+
+
+
+
+      
+      
+
+
+
+
+
+      
+      
+
+
+
+
+
+      
+      
+<a class="group inline-flex items-center p-2 rounded-full cursor-pointer hover:bg-primary" href="/posts" title="Archives">
+  <ion-icon class="group-hover:text-primary-content" name="archive"></ion-icon>
+</a>
+
+
+      
+      
+<a class="group inline-flex items-center p-2 rounded-full cursor-pointer hover:bg-primary" href="/categories" title="All Categories">
+  <ion-icon class="group-hover:text-primary-content" name="grid"></ion-icon>
+</a>
+
+
+      
+      
+<a class="group inline-flex items-center p-2 rounded-full cursor-pointer hover:bg-primary" href="/tags" title="All Tags">
+  <ion-icon class="group-hover:text-primary-content" name="pricetags"></ion-icon>
+</a>
+
+
+      
+
+      
+
+      
+    </section>
+  </div>
+</nav>
+
+
+    <div class="flip-container" :class="{ 'flip-it': flip }">
+      <div class="flipper">
+        <div class="front">
+          <div class="container">
+            
+<div class="lg:grid lg:grid-cols-4 gap-4 mt-4 px-4">
+  <div class="hidden lg:block">
+    
+  </div>
+
+  <div class="lg:col-span-2">
+    <article class="mx-auto prose prose-quoteless dark:prose-invert" id="dream-single-post-main" itemscope itemtype="http://schema.org/Article">
+      
+  <meta itemprop="name" content="Linux环境下Mysql安装与部署">
+  <meta itemprop="description" content="简介 本篇介绍Linux环境下mysql软件的安装步骤！">
+  <meta itemprop="datePublished" content="2025-04-08T19:44:02+08:00">
+  <meta itemprop="dateModified" content="2025-04-08T19:44:02+08:00">
+  <meta itemprop="wordCount" content="271">
+  <meta itemprop="keywords" content="Tag1,Tag2">
+
+      <header>
+        <h1 itemprop="headline">Linux环境下Mysql安装与部署</h1>
+        <p class="text-sm">
+          
+            Tuesday, Apr 8, 2025
+          
+
+          | <span>2 minute read</span>
+
+          
+          | <span>Updated at
+            
+              Tuesday, Apr 8, 2025
+            </span>
+          
+        </p>
+
+        
+        <div class="flex justify-between">
+          
+            <div class="flex items-center">
+  
+  <span>@</span>
+  
+
+  <span itemprop="author" itemscope itemtype="https://schema.org/Person">
+  
+    
+      <span itemprop="name">MrZhang</span>
+    
+  
+  </span>
+</div>
+
+          
+
+          <div class="flex items-center gap-2">
+  
+  
+
+  
+  
+  
+  
+  
+    <a class="group inline-flex items-center p-2 rounded-full cursor-pointer hover:bg-primary"
+      href="https://x.com/intent/post?text=Linux%e7%8e%af%e5%a2%83%e4%b8%8bMysql%e5%ae%89%e8%a3%85%e4%b8%8e%e9%83%a8%e7%bd%b2&amp;url=http://localhost:1313/posts/linux-mysql/" target="_blank" rel="noopener noreferrer"
+      title="Share on X">
+      <ion-icon class="group-hover:text-primary-content" name="logo-x"></ion-icon>
+    </a>
+  
+    <a class="group inline-flex items-center p-2 rounded-full cursor-pointer hover:bg-primary"
+      href="https://facebook.com/sharer/sharer.php?u=http://localhost:1313/posts/linux-mysql/" target="_blank" rel="noopener noreferrer"
+      title="Share on Facebook">
+      <ion-icon class="group-hover:text-primary-content" name="logo-facebook"></ion-icon>
+    </a>
+  
+    <a class="group inline-flex items-center p-2 rounded-full cursor-pointer hover:bg-primary"
+      href="https://wa.me/?text=Linux%e7%8e%af%e5%a2%83%e4%b8%8bMysql%e5%ae%89%e8%a3%85%e4%b8%8e%e9%83%a8%e7%bd%b2%20http://localhost:1313/posts/linux-mysql/" target="_blank" rel="noopener noreferrer"
+      title="Share on WhatsApp">
+      <ion-icon class="group-hover:text-primary-content" name="logo-whatsapp"></ion-icon>
+    </a>
+  
+
+  
+  
+</div>
+
+        </div>
+      </header>
+
+      <section id="dream-single-post-content" itemprop="articleBody">
+        
+
+        <h2 id="简介">简介</h2>
+<p>本篇介绍Linux环境下mysql软件的安装步骤！</p>
+<h2 id="所需软件">所需软件</h2>
+<ol>
+<li>linux的环境可供安装。</li>
+<li>mysql5.7安装包</li>
+<li>XShell或者MobaXteam远程连接工具</li>
+</ol>
+<h2 id="安装步骤">安装步骤</h2>
+<ol>
+<li>
+<p>检查是否已经安装mysql</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rpm -qa | grep mysql
+</span></span></code></pre></div></li>
+<li>
+<p>如果没有安装，什么都不会显示，如果有显示，卸载mysql相关文件，xxx 为文件全名。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>rpm -e xxx
+</span></span></code></pre></div></li>
+<li>
+<p>在官网下载mysql的安装包</p>
+<p>官网地址：https://downloads.mysql.com/archives/community/</p>
+</li>
+<li>
+<p>上传解压</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>tar -zxvf mysql-5.7.35-linux-glibc2.12-x86_64.tar.gz
+</span></span></code></pre></div></li>
+<li>
+<p>检查mysql的用户组与mysql用户，没有就添加用户</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>groups mysql
+</span></span></code></pre></div><p>添加用户组与用户</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>groupadd mysql <span style="color:#f92672">&amp;&amp;</span> useradd -r -g mysql mysql
+</span></span></code></pre></div></li>
+<li>
+<p>创建数据目录并赋予权限</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>mkdir -p /data/mysql
+</span></span><span style="display:flex;"><span>chown mysql:mysql -R /data/mysql
+</span></span></code></pre></div></li>
+<li>
+<p>修改配置文件</p>
+<p>如果找不到该配置文件，就创建配置文件</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>vim /etc/my.cnf
+</span></span></code></pre></div><p>修改以下数据</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span>[mysqld]
+</span></span><span style="display:flex;"><span>bind-address=0.0.0.0
+</span></span><span style="display:flex;"><span>port=3306
+</span></span><span style="display:flex;"><span>user=mysql
+</span></span><span style="display:flex;"><span>basedir=/usr/local/mysql
+</span></span><span style="display:flex;"><span>datadir=/data/mysql
+</span></span><span style="display:flex;"><span>socket=/tmp/mysql.sock
+</span></span><span style="display:flex;"><span>log-error=/data/mysql/mysql.err
+</span></span><span style="display:flex;"><span>pid-file=/data/mysql/mysql.pid
+</span></span><span style="display:flex;"><span>#character config
+</span></span><span style="display:flex;"><span>character_set_server=utf8mb4
+</span></span><span style="display:flex;"><span>symbolic-links=0
+</span></span><span style="display:flex;"><span>explicit_defaults_for_timestamp=true
+</span></span></code></pre></div></li>
+<li>
+<p>初始化</p>
+<p>解压后的mysql-5.7.35-linux-glibc2.12-x86_64文件移动到/usr/local/mysql （文件夹名称修改为mysql不带版本号信息)</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cd /usr/local/mysql/bin/
+</span></span><span style="display:flex;"><span>./mysqld --defaults-file<span style="color:#f92672">=</span>/etc/my.cnf --basedir<span style="color:#f92672">=</span>/usr/local/mysql/ --datadir<span style="color:#f92672">=</span>/data/mysql/ --user<span style="color:#f92672">=</span>mysql --initialize
+</span></span></code></pre></div></li>
+<li>
+<p>查看初始密码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cat /data/mysql/mysql.err
+</span></span></code></pre></div></li>
+<li>
+<p>启动mysql</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>cp /usr/local/mysql/support-files/mysql.server /etc/init.d/mysql
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>service mysql start
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>ps -ef |grep mysql
+</span></span></code></pre></div></li>
+<li>
+<p>登录mysql，使用初始密码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>./mysql -u root -p   <span style="color:#75715e">#bin目录下</span>
+</span></span></code></pre></div></li>
+<li>
+<p>修改密码，重新登录</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>SET PASSWORD <span style="color:#f92672">=</span> PASSWORD<span style="color:#f92672">(</span><span style="color:#e6db74">&#39;root&#39;</span><span style="color:#f92672">)</span>;
+</span></span><span style="display:flex;"><span>ALTER USER <span style="color:#e6db74">&#39;root&#39;</span>@<span style="color:#e6db74">&#39;localhost&#39;</span> PASSWORD EXPIRE NEVER;
+</span></span><span style="display:flex;"><span>FLUSH PRIVILEGES;                                 
+</span></span></code></pre></div></li>
+<li>
+<p>开放远程访问权限</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>use mysql                                            <span style="color:#75715e">#访问mysql库</span>
+</span></span><span style="display:flex;"><span>update user set host <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;%&#39;</span> where user <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;root&#39;</span>;      <span style="color:#75715e">#使root能再任何host访问</span>
+</span></span><span style="display:flex;"><span>FLUSH PRIVILEGES;                                    <span style="color:#75715e">#刷新</span>
+</span></span></code></pre></div></li>
+<li>
+<p>关闭防火墙可以访问</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>systemctl status firewalld  <span style="color:#75715e">#查看当前防火墙状态</span>
+</span></span><span style="display:flex;"><span>systemctl disable firewalld  <span style="color:#75715e">#停止防火墙</span>
+</span></span><span style="display:flex;"><span>systemctl stop firewalld <span style="color:#75715e">#禁用防火墙</span>
+</span></span></code></pre></div><p>或者可以添加开发的端口号进行访问</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>firewall-cmd --state  <span style="color:#75715e">#防火墙状态</span>
+</span></span><span style="display:flex;"><span>firewall-cmd --zone<span style="color:#f92672">=</span>public --list-ports  <span style="color:#75715e">#查看当前开放的端口号</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>firewall-cmd --zone<span style="color:#f92672">=</span>public --add-port<span style="color:#f92672">=</span>80/tcp --permanent   <span style="color:#75715e">#添加开发80端口</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># –permanent永久生效，没有此参数重启后失效</span>
+</span></span><span style="display:flex;"><span>firewall-cmd --zone<span style="color:#f92672">=</span>public --remove-port<span style="color:#f92672">=</span>80/tcp --permanent <span style="color:#75715e">#移除开放的端口</span>
+</span></span></code></pre></div></li>
+<li>
+<p>然后就可以使用本机电脑上的工具去连接mysql数据库了。</p>
+</li>
+<li>
+<p>为了使得mysql的命令在所有位置都使用，无需只在bin目录下才可以，可以添加以下配置</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ln -s  /usr/local/mysql/bin/mysql    /usr/bin
+</span></span></code></pre></div></li>
+<li>
+<p>注：mysql低版本默认在linux端是区分大小写的，可以修改配置文件，不区分大小写</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>修改不区分大小写,在my.cnf中的<span style="color:#f92672">[</span>mysqld<span style="color:#f92672">]</span>后面添加lower_case_table_names<span style="color:#f92672">=</span>1，重启MYSQL服务
+</span></span></code></pre></div></li>
+</ol>
+<p><strong>其他操作：</strong>=======================================</p>
+<ol>
+<li>
+<p>修改密码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>1. 开启免密码登陆 修改my.cnf文件   默认在/etc/my.cnf。
+</span></span><span style="display:flex;"><span>vim /etc/my.cnf   在【mysqld】模块下面添加：skip-grant-tables 保存退出。
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>2. 重启服务，使配置生效 。   
+</span></span><span style="display:flex;"><span>service mysql restart
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>3. 登陆     
+</span></span><span style="display:flex;"><span>/usr/local/mysql/bin/mysql -u root -p   //不输入密码直接敲回车键
+</span></span></code></pre></div></li>
+<li>
+<p>允许外部访问</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>	use mysql 　　　　 <span style="color:#75715e">#选择访问mysql库</span>
+</span></span><span style="display:flex;"><span>　　update user set host <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;%&#39;</span> where user <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;root&#39;</span>; 　　　　 <span style="color:#75715e">#使root能再任何host访问</span>
+</span></span><span style="display:flex;"><span>　　FLUSH PRIVILEGES; 　　 　　 <span style="color:#75715e">#刷新 </span>
+</span></span></code></pre></div></li>
+<li>
+<p>修改密码</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ALTER USER <span style="color:#e6db74">&#34;root&#34;</span>@<span style="color:#e6db74">&#34;%&#34;</span> IDENTIFIED  BY <span style="color:#e6db74">&#34;root&#34;</span>;
+</span></span><span style="display:flex;"><span>FLUSH PRIVILEGES; 　　 　　 <span style="color:#75715e">#刷新 </span>
+</span></span></code></pre></div></li>
+<li>
+<p>退出登录，重新登陆</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>把/etc/my.cnf免密删掉。
+</span></span><span style="display:flex;"><span> 在【mysqld】模块下面删除：skip-grant-tables
+</span></span><span style="display:flex;"><span>重启服务    service mysql restart
+</span></span></code></pre></div><p>登陆  /usr/local/mysql/bin/mysql -u root -p  //输入刚修改的密码root敲回车键</p>
+</li>
+<li>
+<p>用户权限创建，创建新用户</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>创建mysql新用户
+</span></span><span style="display:flex;"><span>CREATE USER <span style="color:#e6db74">&#39;test&#39;</span>@<span style="color:#e6db74">&#39;%&#39;</span> IDENTIFIED BY <span style="color:#e6db74">&#39;123&#39;</span>;
+</span></span><span style="display:flex;"><span>备注上面@后的命令解释
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#e6db74">&#39;%&#39;</span> - 所有情况都能访问
+</span></span><span style="display:flex;"><span>‘localhost’ - 本机才能访问
+</span></span><span style="display:flex;"><span>’111.222.33.44‘ - 指定 ip 才能访问
+</span></span><span style="display:flex;"><span>3.给用户授予权限
+</span></span><span style="display:flex;"><span>grant all on 数据库名.数据库表 to 用户名@<span style="color:#e6db74">&#39;%&#39;</span>  identified by <span style="color:#e6db74">&#34;密码&#34;</span>;
+</span></span><span style="display:flex;"><span>备注
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>all 可以替换为 <span style="color:#66d9ef">select</span>,delete,update,create,drop
+</span></span><span style="display:flex;"><span>数据库名 所有的 用*
+</span></span><span style="display:flex;"><span>数据库表 所有的 用*
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>如果是阿里云，记得查看云安全组规则是否开放了3306端口，如果没有，记得加上
+</span></span></code></pre></div></li>
+</ol>
+
+        
+      </section>
+
+      
+
+      
+    </article>
+  </div>
+
+  <div class="hidden lg:flex lg:flex-col lg:items-end">
+    
+  </div>
+</div>
+
+
+            
+<footer class="flex justify-between items-center gap-2 px-4 py-12">
+
+  <div>
+  
+  <p>
+    © 2016 - 2025 MrZhang&#39; Blog
+  </p>
+  
+
+  
+  <p class="text-sm">
+    🌱
+    <span class="text-base-content/60">
+      Powered by <a class="hover:underline" href="https://gohugo.io/" target="_blank">Hugo</a> with theme
+      <a class="hover:underline" href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</span
+    >
+  </p>
+  
+</div>
+
+  <div
+  x-data="{ icons: [
+    { name: 'sunny', status: 'n' },
+    { name: 'moon', status: 'y' },
+    { name: 'desktop', status: 'auto' }
+  ] }"
+  class="flex items-center gap-2 h-[32px] px-2 bg-base-100 border border-base-content/30 rounded-full"
+>
+  <template x-for="icon in icons">
+    <div
+      role="button"
+      tabindex="0"
+      :aria-label="'Select ' + icon.name + ' mode'"
+      class="group inline-flex justify-center items-center p-1 rounded-full cursor-pointer hover:bg-primary"
+      :class="$store.darkMode.icon() === icon.name && 'bg-primary'"
+      @click="$store.darkMode.toggle(icon.status)"
+    >
+      <ion-icon
+        :name="`${icon.name}-outline`"
+        class="group-hover:text-primary-content"
+        :class="$store.darkMode.icon() === icon.name && 'text-primary-content'"
+      >
+      </ion-icon>
+    </div>
+  </template>
+</div>
+
+</footer>
+
+          </div>
+        </div>
+        <div class="back">
+          <div class="container">
+            
+            <div class="dream-grid dream-grid-about">
+  
+
+  
+
+  
+</div>
+
+            
+
+            
+<footer class="flex justify-between items-center gap-2 px-4 py-12">
+
+  <div>
+  
+  <p>
+    © 2016 - 2025 MrZhang&#39; Blog
+  </p>
+  
+
+  
+  <p class="text-sm">
+    🌱
+    <span class="text-base-content/60">
+      Powered by <a class="hover:underline" href="https://gohugo.io/" target="_blank">Hugo</a> with theme
+      <a class="hover:underline" href="https://github.com/g1eny0ung/hugo-theme-dream" target="_blank">Dream</a>.</span
+    >
+  </p>
+  
+</div>
+
+  <div
+  x-data="{ icons: [
+    { name: 'sunny', status: 'n' },
+    { name: 'moon', status: 'y' },
+    { name: 'desktop', status: 'auto' }
+  ] }"
+  class="flex items-center gap-2 h-[32px] px-2 bg-base-100 border border-base-content/30 rounded-full"
+>
+  <template x-for="icon in icons">
+    <div
+      role="button"
+      tabindex="0"
+      :aria-label="'Select ' + icon.name + ' mode'"
+      class="group inline-flex justify-center items-center p-1 rounded-full cursor-pointer hover:bg-primary"
+      :class="$store.darkMode.icon() === icon.name && 'bg-primary'"
+      @click="$store.darkMode.toggle(icon.status)"
+    >
+      <ion-icon
+        :name="`${icon.name}-outline`"
+        class="group-hover:text-primary-content"
+        :class="$store.darkMode.icon() === icon.name && 'text-primary-content'"
+      >
+      </ion-icon>
+    </div>
+  </template>
+</div>
+
+</footer>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+  window.lightTheme = "emerald"
+  window.darkTheme = "forest"
+</script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.min.js" integrity="sha256-htrLFfZJ6v5udOG+3kNLINIKh2gvoKqwEhHYfTTMICc=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script>
+
+  
+  
+  <script src="/js/grid.js"></script>
+
+
+
+
+<script src="/js/main.js"></script>
+
+    
+
+
+
+
+
+
+
+
+
+    
+
+    
+
+    
+
+    
+
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.esm.js" integrity="sha256-/IFmi82bIhdYWctu0UddSlJqpnzWm7Vh2C4CM32wF/k=" crossorigin="anonymous"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/ionicons/ionicons.js" integrity="sha256-mr7eJMX3VC3F7G32mk4oWp1C6a2tlMYxUdptfT7uKI8=" crossorigin="anonymous"></script>
+  </body>
+</html>
